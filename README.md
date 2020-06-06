@@ -16,4 +16,4 @@ Now we need to get the Mythtv source code:
 ...Go to the directory where the API's we need are located:  
 `cd ./mythtv/bindings/python/`  
 ...And install the python API  
-`sudo python3 setup.py install`  
+`python3 setup.py install`  
