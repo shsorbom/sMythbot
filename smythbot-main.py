@@ -11,7 +11,7 @@ async def genCfg(cfgPath):
     mCfg["MythTvProperties"] = {"Host Name": "mythbox", "IP Address": "127.0.0.1", "Mythbackend Port": "6544", "MythFrontend Port":"6547"}
     mCfg["IMAP Settings"] = {"Sever IP": "127.0.0.1","Username":"username", "Password": "password", "Security": "ssl"}
     mCfg["SMTP Settings"] = {"Sever IP": "127.0.0.1","Username":"username", "Password": "password", "Security": "startls", "Email Address": "email@example.com"}
-    mCfg["Matrix Settings"] = {"Server Name": "127.0.0.1","User Name":"username", "Password": "password"}
+    mCfg["Matrix Settings"] = {"Server Name": "127.0.0.1","User Name":"username", "Password": "password", "SSL Check": True} # TODO: Add support to toggle SSL Checks.
     with open(cfgPath, "w") as configfile:
         mCfg.write(configfile)
 
@@ -20,7 +20,7 @@ async def main():
     # Obligatory Setup
     #------------------
 
-    cfgFilePath = os.path.expanduser("~/.mythbot/config.ini")
+    cfgFilePath = os.path.expanduser("~/.mythbot/config.ini") # TODO: Rewrite this statement for non POSIX systems
     cfgExists = os.path.exists(cfgFilePath)
     print (cfgFilePath)
     # TODO: Add argparser, the above settings are temporary
@@ -34,9 +34,9 @@ async def main():
     botCfg = configparser.ConfigParser()
     botCfg.read(cfgFilePath)
     matrix_bot = smythClient(botCfg["Matrix Settings"]["Server Name"], botCfg["Matrix Settings"]["User Name"], botCfg["Matrix Settings"]["Password"])
-    await matrix_bot.init_login()
+    await matrix_bot.start_client()
     await matrix_bot.client.close()
-    print(matrix_bot.response)
+    #print(matrix_bot.response)
     
     
     
