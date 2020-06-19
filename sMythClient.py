@@ -11,12 +11,18 @@ class smythClient(object):
         self.username = username
         self.password = password
         self.client = AsyncClient(self.homeserver, self.username, ssl = False)
+
         
 
         #Initialize per room configurator
         self.roomConfigsPath = os.path.expanduser("~/.mythbot/rooms.ini")
         self.smythbotRoomConfigs = configparser.ConfigParser()
-        self.roomCfgDefaults = self.get_default_room_options_for_smythbot()
+        self.isSynced = False
+
+        #Add callbacks
+        self.client.add_event_callback(self.onNewMatrixEventReccieved, RoomMessageText)
+        sync_event = asyncio.create_task(self.watch_for_sync(self.client.synced))
+
         return
 
     async def init_login(self):
@@ -39,7 +45,7 @@ class smythClient(object):
         
         await self.init_login()
         await self.sync_room_configs()
-        #await self.client.sync_forever(timeout=30000)
+        await self.client.sync_forever(timeout=30000, full_state=True)
         return
 
     async def sync_room_configs(self):
@@ -62,35 +68,47 @@ class smythClient(object):
             newDataWritten = False
             if not self.smythbotRoomConfigs.has_section(room_id):
                 newDataWritten = True
-                self.smythbotRoomConfigs[room_id] = {}
-                self.smythbotRoomConfigs[room_id]["MythTv Backend address"] = "None"
-                self.smythbotRoomConfigs[room_id]["MythTv Backend Port"] = "6544"
-                self.smythbotRoomConfigs[room_id]["Room Notifications"] = "False"
-                print("Added new room Configuration " + room_id)
-                
+                await self.populateRoomConfigs(room_id, False)
         if newDataWritten:
-            print("Writing New data to file: " + self.roomConfigsPath)
-            with open(self.roomConfigsPath, "w") as roomsFile:
-                self.smythbotRoomConfigs.write(roomsFile) 
+            await self.writeChangesToDisk()
         else:
             print ("No new room configurations found") 
 
 
-    def get_default_room_options_for_smythbot(self):
-        """
-        NOTE: Not used, I may delete this
-        Name: get_default_room_options_for_smythbot
-        Expected input: None
-        Expected output: dict of all room configuration options and their default values
-        Description: used internally for updating out of date room configurations.
-        """
-        roomOptsDict = {}
-        roomOptsDict["Backend URL"] = "None"
-        roomOptsDict["Backend Port"] = 6544
-        roomOptsDict["Notifications"] = False
-        return roomOptsDict
+    async def populateRoomConfigs(self, room_id, writeToDisk):
+        self.smythbotRoomConfigs[room_id] = {}
+        self.smythbotRoomConfigs[room_id]["MythTv Backend address"] = "None"
+        self.smythbotRoomConfigs[room_id]["MythTv Backend Port"] = "6544"
+        self.smythbotRoomConfigs[room_id]["Room Notifications"] = "False"
+        print("Added new room Configuration " + room_id)
+        if writeToDisk:
+           await self.writeChangesToDisk()
+        return
         
+    async def writeChangesToDisk(self):
+        print("Writing New data to file: " + self.roomConfigsPath)
+        with open(self.roomConfigsPath, "w") as roomsFile:
+            self.smythbotRoomConfigs.write(roomsFile)
 
+    async def watch_for_sync(self, sync_event):
+        while True:
+            await sync_event.wait()
+            
+            await self.onIsSyncedCalled()
+            
+            
+    
+    async def onIsSyncedCalled(self):
+        print ("We are synced!")
+        self.isSynced = True
+        return
 
+    async def onNewMatrixEventReccieved(self, room, event):
+        if self.isSynced:
+            print ("Reccieved new message in room." + room.machine_name)
+            print (event.body)
+            
+        else:
+            return
 
            
