@@ -3,6 +3,7 @@ import os
 import configparser
 from importlib import util
 from nio import (AsyncClient, SyncResponse, RoomMessageText)
+import smythbotCommandRunner
 
 class smythClient(object):
     response = None
@@ -11,13 +12,17 @@ class smythClient(object):
         self.username = username
         self.password = password
         self.client = AsyncClient(self.homeserver, self.username, ssl = False)
+        
 
         
 
         #Initialize per room configurator
         self.roomConfigsPath = os.path.expanduser("~/.mythbot/rooms.ini")
         self.smythbotRoomConfigs = configparser.ConfigParser()
+
+        # Declare the nessescary variables:
         self.isSynced = False
+        self.smythbot_handler = "!smythbot"
 
         #Add callbacks
         self.client.add_event_callback(self.onNewMatrixEventReccieved, RoomMessageText)
@@ -91,6 +96,11 @@ class smythClient(object):
             self.smythbotRoomConfigs.write(roomsFile)
 
     async def watch_for_sync(self, sync_event):
+        """
+        Input: AsyncClient Sync Event
+        Output: None
+        Description: When AsyncClient fires a synced event (which only happens during a "sync_forever" loop), this function is called.
+        """
         while True:
             await sync_event.wait()
             
@@ -99,16 +109,34 @@ class smythClient(object):
             
     
     async def onIsSyncedCalled(self):
+        """
+        Called from the "watch_for_sync" event. This funtion sets the client state as being up to speed with 
+        the current messages.
+        """
         print ("We are synced!")
         self.isSynced = True
         return
 
     async def onNewMatrixEventReccieved(self, room, event):
-        if self.isSynced:
-            print ("Reccieved new message in room." + room.machine_name)
-            print (event.body)
-            
+        print("New Event")
+        if self.isSynced and event.body.startswith(self.smythbot_handler):
+            await self.client.room_send(room.machine_name, "m.room.message", await self.reply("<h1>Command reccieved</h1>")) #debug
+            print("DEBUG: New command: " + event.body)
+            """ commandRunner = smythbotCommandRunner.smythbot_command(event.body)
+            await commandRunner.parse_raw_command()
+            #Debug:
+            commandRunner.command_index.append(commandRunner.get_help)
+            for item in commandRunner.command_index:
+                print ("Debug loop")
+                await self.client.room_send(room.machine_name, "m.room.message",  "m.room.message", {"msgtype":"m.text", "body":"New command reccieved", "format": "org.matrix.custom.html", "formatted_body": "<h1>New Command Reccieved</h1>"}) """
         else:
             return
 
-           
+    async def reply(self, reply_body):
+        reply_content = {}
+        reply_content["msgtype"] = "m.notice"
+        reply_content["body"] =""
+        reply_content["format"] = "org.matrix.custom.html"
+        reply_content["formatted_body"] = reply_body
+        return reply_content
+
