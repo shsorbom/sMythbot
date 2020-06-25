@@ -4,17 +4,42 @@ class smythbot_command(object):
         self.formatting = formatting
         self.mythtv_backend = mythyv_backend
         self.mythtv_port = mythtv_port
-        self.command_index = [] # A List of dict pairs we will be returning to the 
+        self.command_results = [] # A List of dict entries we will be returning to the client
+        self.valid_commands = {} # A list of commands we will recognize
+
+        # Valid commands:
+        
+    
+    async def setValidCommands(self):
+        self.valid_commands["help"] = await self.get_help()
     
     async def parse_raw_command(self):
-        if self.raw_command.find("!smythbot help"):
-            self.command_index.append(self.get_help())
+        self.raw_command = self.raw_command.lower()
+        command_list = self.raw_command.split("!smythbot")
+        return command_list
+
+    async def poulate_command_index(self):
+        command_string_list = await self.parse_raw_command()
+        #print("Debug: Length of command string: " + str(len(command_string_list)))
+        
+        for piece in command_string_list:
+            if piece.startswith("help"):
+                self.command_results.append(self.get_help(piece))
+            elif piece.startswith("set mythbackend address"):
+                pass
+            elif piece.startswith("set mythbackend port"):
+                pass
+            
+            #..
+            else:
+                self.command_results.append(self.return_error)
+
 
     async def compiled_command_index(self):
         pass
     
     # Actual bot commands go here: 
-    def get_help(self, help = "help"):
+    async def get_help(self, help = "help"):
         if help.lower() == "help":
             help_string = """<h1> Hi, I am sMythbot</h1>
             <p>I exist to manage the MythTv DVR via Matrix chat.</p>
@@ -30,3 +55,8 @@ class smythbot_command(object):
         command_shard = {"command name":"help", "command output": help_string}
         return command_shard
 
+    async def return_error(bad_string):
+        command_shard = {}
+        command_shard["command name"] = "command not found"
+        command_shard["command output"] = "<h1> The Command: " + bad_string + " was not recognized.<\h1><p>Type: <strong>!smythbot help</strong> for more information about currently supported commands.</p>"
+        return command_shard

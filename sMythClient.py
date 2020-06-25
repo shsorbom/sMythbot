@@ -123,10 +123,12 @@ class smythClient(object):
             await self.client.room_send(room.machine_name, "m.room.message", await self.reply("<h1>Command reccieved</h1>")) #debug
             print("DEBUG: New command: " + event.body)
             #Debugging:
+            #----------
             command_list = []
             command_list.append("<h1>Test Reply 1</h1>")
             command_list.append("<h1>Test Reply 2</h1>")
             command_list.append("<h1>Test Reply 3</h1>")
+            #----------
             for item in command_list:
                 await self.client.room_send(room.machine_name, "m.room.message", await self.reply(item))
         else:
