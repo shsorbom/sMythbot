@@ -7,15 +7,13 @@ class smythbot_command(object):
         self.command_results = [] # A List of dict entries we will be returning to the client
         self.valid_commands = {} # A list of commands we will recognize
 
-        # Valid commands:
         
     
-    async def setValidCommands(self):
-        self.valid_commands["help"] = await self.get_help()
+
     
     async def parse_raw_command(self):
         self.raw_command = self.raw_command.lower()
-        command_list = self.raw_command.split("!smythbot")
+        command_list = self.raw_command.split("!smythbot ")
         return command_list
 
     async def poulate_command_index(self):
@@ -24,7 +22,7 @@ class smythbot_command(object):
         
         for piece in command_string_list:
             if piece.startswith("help"):
-                self.command_results.append(self.get_help(piece))
+                self.command_results.append(await self.get_help(piece))
             elif piece.startswith("set mythbackend address"):
                 pass
             elif piece.startswith("set mythbackend port"):
@@ -32,15 +30,15 @@ class smythbot_command(object):
             
             #..
             else:
-                self.command_results.append(self.return_error)
-
+                self.command_results.append(await self.return_error(piece))
+        return self.command_results
 
     async def compiled_command_index(self):
         pass
     
     # Actual bot commands go here: 
     async def get_help(self, help = "help"):
-        if help.lower() == "help":
+        if help.lower() == "help" or help.lower() == "help ": #FIXME: Checking for trailing spaces should NEVER be done here, do it after the split, when checking raw input
             help_string = """<h1> Hi, I am sMythbot</h1>
             <p>I exist to manage the MythTv DVR via Matrix chat.</p>
             <p> I currently support the following commands:</p>
@@ -55,8 +53,8 @@ class smythbot_command(object):
         command_shard = {"command name":"help", "command output": help_string}
         return command_shard
 
-    async def return_error(bad_string):
+    async def return_error(self, bad_string):
         command_shard = {}
         command_shard["command name"] = "command not found"
-        command_shard["command output"] = "<h1> The Command: " + bad_string + " was not recognized.<\h1><p>Type: <strong>!smythbot help</strong> for more information about currently supported commands.</p>"
+        command_shard["command output"] = "<h1> The Command: " + bad_string + " was not recognized.</h1><p>Type: <strong>!smythbot help</strong> for more information about currently supported commands.</p>"
         return command_shard
