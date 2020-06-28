@@ -13,14 +13,25 @@ class smythbot_command(object):
     
     async def parse_raw_command(self):
         self.raw_command = self.raw_command.lower()
+        self.raw_command = await self.strip_trailing_spaces(self.raw_command)
         command_list = self.raw_command.split("!smythbot ")
+        command_list.pop(0) # The zeroeth element in a split list is always blank, therefore useless.
         return command_list
+   
+    async def strip_trailing_spaces(self, input_string):
+        split_input_string = input_string.split()
+        list_index = len(split_input_string) - 1
+        while split_input_string[list_index] == " " or split_input_string[list_index] == "":
+            split_input_string.pop(list_index)
+            list_index = list_index - 1
+        return " ".join(split_input_string)
 
     async def poulate_command_index(self):
         command_string_list = await self.parse_raw_command()
         #print("Debug: Length of command string: " + str(len(command_string_list)))
         
         for piece in command_string_list:
+            piece = await self.strip_trailing_spaces(piece)
             if piece.startswith("help"):
                 self.command_results.append(await self.get_help(piece))
             elif piece.startswith("set mythbackend address"):
