@@ -49,20 +49,26 @@ class smythbot_command(object):
     
     # Actual bot commands go here: 
     async def get_help(self, help = "help"):
-        if help.lower() == "help" or help.lower() == "help ": #FIXME: Checking for trailing spaces should NEVER be done here, do it after the split, when checking raw input
+        if help.lower() == "help": 
             help_string = """<h1> Hi, I am sMythbot</h1>
             <p>I exist to manage the MythTv DVR via Matrix chat.</p>
             <p> I currently support the following commands:</p>
             <br><br>
             <strong>!smythbot help:</strong> Display this message <br>
             <strong>!smythbot set mythbackend address:</strong> Sets the mthtv backend address to use for this room.  <br>
-            <strong>!smythbot set mythbacked port</strong> Sets the mthtv backend address to use for this room. <br>
+            <strong>!smythbot set mythbacked port:</strong> Sets the mthtv backend address to use for this room. <br>
             """
             #<strong></strong>  <br>
         else:
             pass
         command_shard = {"command name":"help", "command output": help_string}
         return command_shard
+
+    async def set_mythbackend_address(self, address):
+        pass
+    
+    async def set_mythbackend_port(self, port):
+        pass
 
     async def return_error(self, bad_string):
         command_shard = {}

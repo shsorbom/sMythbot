@@ -118,19 +118,12 @@ class smythClient(object):
         return
 
     async def onNewMatrixEventReccieved(self, room, event):
-        print("New Event")
         if self.isSynced and event.body.startswith(self.smythbot_handler):
-            await self.client.room_send(room.machine_name, "m.room.message", await self.reply("<h1>Command reccieved</h1>")) #debug
-            print("DEBUG: New command: " + event.body)
-            #Debugging:
-            #----------
-            command_list = []
-            command_list.append("<h1>Test Reply 1</h1>")
-            command_list.append("<h1>Test Reply 2</h1>")
-            command_list.append("<h1>Test Reply 3</h1>")
-            #----------
-            for item in command_list:
-                await self.client.room_send(room.machine_name, "m.room.message", await self.reply(item))
+            command_runner = smythbotCommandRunner.smythbot_command(event.body) 
+            command_outputs = await command_runner.poulate_command_index() # The various smythbot commands will be processed inside of this function
+            for item in command_outputs:
+                await self.client.room_send(room.machine_name, "m.room.message", await self.reply(item["command output"]))
+            
         else:
             return
 
