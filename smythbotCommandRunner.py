@@ -35,9 +35,9 @@ class smythbot_command(object):
             if piece.startswith("help"):
                 self.command_results.append(await self.get_help(piece))
             elif piece.startswith("set mythbackend address"):
-                pass
+                self.command_results.append(await self.set_mythbackend_address(piece))
             elif piece.startswith("set mythbackend port"):
-                pass
+                self.command_results.append(await self.set_mythbackend_port(piece))
             
             #..
             else:
@@ -64,10 +64,15 @@ class smythbot_command(object):
         command_shard = {"command name":"help", "command output": help_string}
         return command_shard
 
-    async def set_mythbackend_address(self, address):
-        pass
+    async def set_mythbackend_address(self, raw_command_input):
+        command_shard = {}
+        split_command_string = raw_command_input.split()
+        command_shard["command name"] = "set ip address"
+        command_shard["room settings data"] = {"MythTv Backend Address":split_command_string[3]}
+        command_shard["command output"] = "<h1>You Set the local Mythtv Backend Address to " + split_command_string[3] +" </h1>"
+        return command_shard
     
-    async def set_mythbackend_port(self, port):
+    async def set_mythbackend_port(self, raw_command_input):
         pass
 
     async def return_error(self, bad_string):

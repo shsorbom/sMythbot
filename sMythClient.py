@@ -82,7 +82,7 @@ class smythClient(object):
 
     async def populateRoomConfigs(self, room_id, writeToDisk):
         self.smythbotRoomConfigs[room_id] = {}
-        self.smythbotRoomConfigs[room_id]["MythTv Backend address"] = "None"
+        self.smythbotRoomConfigs[room_id]["MythTv Backend Address"] = "not set"
         self.smythbotRoomConfigs[room_id]["MythTv Backend Port"] = "6544"
         self.smythbotRoomConfigs[room_id]["Room Notifications"] = "False"
         print("Added new room Configuration " + room_id)
@@ -122,7 +122,12 @@ class smythClient(object):
             command_runner = smythbotCommandRunner.smythbot_command(event.body) 
             command_outputs = await command_runner.poulate_command_index() # The various smythbot commands will be processed inside of this function
             for item in command_outputs:
+                for key_item in item.keys():
+                    if key_item == "room settings data":
+                        await self.adjust_room_settings(item["room settings data"], room.room_id)
+
                 await self.client.room_send(room.machine_name, "m.room.message", await self.reply(item["command output"]))
+            
             
         else:
             return
@@ -134,4 +139,8 @@ class smythClient(object):
         reply_content["format"] = "org.matrix.custom.html"
         reply_content["formatted_body"] = reply_body
         return reply_content
+
+    async def adjust_room_settings(self, room_settings_dict, room_id):
+        print("adjusting room setings in room " + room_id)
+        return
 
