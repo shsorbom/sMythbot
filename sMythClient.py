@@ -142,5 +142,7 @@ class smythClient(object):
 
     async def adjust_room_settings(self, room_settings_dict, room_id):
         print("adjusting room setings in room " + room_id)
+        self.smythbotRoomConfigs[room_id][room_settings_dict["property name"]] = room_settings_dict["property value"]
+        await self.writeChangesToDisk()
         return
 

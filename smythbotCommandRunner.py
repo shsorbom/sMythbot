@@ -68,7 +68,7 @@ class smythbot_command(object):
         command_shard = {}
         split_command_string = raw_command_input.split()
         command_shard["command name"] = "set ip address"
-        command_shard["room settings data"] = {"MythTv Backend Address":split_command_string[3]}
+        command_shard["room settings data"] = {"property name":"MythTv Backend Address", "property value":split_command_string[3]}
         command_shard["command output"] = "<h1>You Set the local Mythtv Backend Address to " + split_command_string[3] +" </h1>"
         return command_shard
     
