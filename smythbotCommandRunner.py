@@ -69,7 +69,8 @@ class smythbot_command(object):
         return await self.set_client_property("MythTv Backend Address", split_command_string[3])
     
     async def set_mythbackend_port(self, raw_command_input):
-        pass
+        split_command_string = raw_command_input.split()
+        return await self.set_client_property("MythTv Backend Port", split_command_string[3])
 
     async def return_error(self, bad_string):
         command_shard = {}
