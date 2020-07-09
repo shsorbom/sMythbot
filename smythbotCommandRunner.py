@@ -65,12 +65,8 @@ class smythbot_command(object):
         return command_shard
 
     async def set_mythbackend_address(self, raw_command_input):
-        command_shard = {}
         split_command_string = raw_command_input.split()
-        command_shard["command name"] = "set ip address"
-        command_shard["room settings data"] = {"property name":"MythTv Backend Address", "property value":split_command_string[3]}
-        command_shard["command output"] = "<h1>You Set the local Mythtv Backend Address to " + split_command_string[3] +" </h1>"
-        return command_shard
+        return await self.set_client_property("MythTv Backend Address", split_command_string[3])
     
     async def set_mythbackend_port(self, raw_command_input):
         pass
@@ -79,4 +75,11 @@ class smythbot_command(object):
         command_shard = {}
         command_shard["command name"] = "command not found"
         command_shard["command output"] = "<h1> The Command: " + bad_string + " was not recognized.</h1><p>Type: <strong>!smythbot help</strong> for more information about currently supported commands.</p>"
+        return command_shard
+    
+    async def set_client_property(self, property_name, property_value):
+        command_shard = {}
+        command_shard["command name"] = "set the " + property_name + " for this room"
+        command_shard["room settings data"] = {"property name":property_name, "property value":property_value}
+        command_shard["command output"] = "<h1>You " + command_shard["command name"] + " to " + property_value + " </h1>"
         return command_shard
