@@ -56,7 +56,7 @@ class smythbot_command(object):
             <br><br>
             <strong>!smythbot help:</strong> Display this message <br>
             <strong>!smythbot set mythbackend address:</strong> Sets the mthtv backend address to use for this room.  <br>
-            <strong>!smythbot set mythbacked port:</strong> Sets the mthtv backend address to use for this room. <br>
+            <strong>!smythbot set mythbacked port:</strong> Sets the mthtv backend port to use for this room. <br>
             """
             #<strong></strong>  <br>
         else:
@@ -83,4 +83,11 @@ class smythbot_command(object):
         command_shard["command name"] = "set the " + property_name + " for this room"
         command_shard["room settings data"] = {"property name":property_name, "property value":property_value}
         command_shard["command output"] = "<h1>You " + command_shard["command name"] + " to " + property_value + " </h1>"
+        return command_shard
+
+    async def view_client_property(self, property_name, property_value):
+        command_shard = {}
+        command_shard["command name"] = "The " + property_name + " for this room"
+        command_shard["room settings data"] = {"property name":property_name, "property value":property_value}
+        command_shard["command output"] = "<h1>" + command_shard["command name"] + " is " + property_value + " </h1>"
         return command_shard
