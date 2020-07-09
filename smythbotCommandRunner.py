@@ -6,10 +6,6 @@ class smythbot_command(object):
         self.mythtv_port = mythtv_port
         self.command_results = [] # A List of dict entries we will be returning to the client
         self.valid_commands = {} # A list of commands we will recognize
-
-        
-    
-
     
     async def parse_raw_command(self):
         self.raw_command = self.raw_command.lower()
@@ -87,6 +83,12 @@ class smythbot_command(object):
         command_shard["command output"] = "<h1> The Command: " + bad_string + " was not recognized.</h1><p>Type: <strong>!smythbot help</strong> for more information about currently supported commands.</p>"
         return command_shard
     
+    async def malformed_command(self, command_name, error_reason):
+        command_shard = {}
+        command_shard["command name"] = "\"" + command_name + "\" was malformed"
+        command_shard["command output"] = "<h1>The command</h1> The command" + command_shard["command name"] +"<p>The reason: " + error_reason + "</p>"
+        return command_shard
+
     async def set_client_property(self, property_name, property_value):
         command_shard = {}
         command_shard["command name"] = "set the " + property_name + " for this room"
@@ -100,3 +102,5 @@ class smythbot_command(object):
         command_shard["room settings data"] = {"property name":property_name, "property value":property_value}
         command_shard["command output"] = "<h1>" + command_shard["command name"] + " is " + property_value + " </h1>"
         return command_shard
+    
+    
