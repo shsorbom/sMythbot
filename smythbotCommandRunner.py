@@ -38,7 +38,10 @@ class smythbot_command(object):
                 self.command_results.append(await self.set_mythbackend_address(piece))
             elif piece.startswith("set mythbackend port"):
                 self.command_results.append(await self.set_mythbackend_port(piece))
-            
+            elif piece.startswith("view mythbackend address"):
+                self.command_results.append(await self.view_mythbackend_address())
+            elif piece.startswith("view mythbackend port"):
+                self.command_results.append(await self.view_mythbackend_port())
             #..
             else:
                 self.command_results.append(await self.return_error(piece))
@@ -72,6 +75,12 @@ class smythbot_command(object):
         split_command_string = raw_command_input.split()
         return await self.set_client_property("MythTv Backend Port", split_command_string[3])
 
+    async def view_mythbackend_address(self):
+        return await self.view_client_property("MythTv Backend Address", self.mythtv_backend)
+
+    async def view_mythbackend_port(self):
+        return await self.view_client_property("MythTv Backend Port", self.mythtv_port)
+    
     async def return_error(self, bad_string):
         command_shard = {}
         command_shard["command name"] = "command not found"
