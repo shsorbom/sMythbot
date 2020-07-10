@@ -1,9 +1,9 @@
 from MythTV.services_api import send as api
 class smythbot_command(object):
-    def __init__(self, raw_command, formatting = True, mythyv_backend = "not set", mythtv_port = 6544):
+    def __init__(self, raw_command, formatting = True, mythtv_backend = "not set", mythtv_port = 6544):
         self.raw_command = raw_command
         self.formatting = formatting
-        self.mythtv_backend = mythyv_backend
+        self.mythtv_backend = mythtv_backend
         self.mythtv_port = mythtv_port
         self.command_results = [] # A List of dict entries we will be returning to the client
         self.valid_commands = {} # A list of commands we will recognize
@@ -107,7 +107,11 @@ class smythbot_command(object):
         return command_shard
     
     async def display_upcoming_recordings(self):
-        mythtv_backend = api.Send(host=self.mythtv_backend)
-        upcoming_queue = mythtv_backend.send(endpoint="Dvr/GetUpcomingList")
+        upcoming_queue = await self._interrogate_mythbackend("Dvr/GetUpcomingList")
         print(upcoming_queue)
         return{"command output":"<h1>Printed upcoming recordings</h1><p>Check console for details</p>"}
+
+    async def _interrogate_mythbackend(self, endpoint_string):
+        mythtv_backend_server = api.Send(host=self.mythtv_backend, port=self.mythtv_port)
+        mythtv_response = mythtv_backend_server.send(endpoint=endpoint_string)
+        return mythtv_response
