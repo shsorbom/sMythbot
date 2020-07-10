@@ -10,6 +10,8 @@ Once you have Python set up, run the following commands in a BASH terminal:
 `pip3 install future`  
 `pip3 install mysqlclient`  
 `pip3 install matrix-nio`  
+`pip3 install lxml`  
+`pip3 install requests`  
 
 Now we need to get the Mythtv source code:  
 `git clone https://github.com/MythTV/mythtv`  
