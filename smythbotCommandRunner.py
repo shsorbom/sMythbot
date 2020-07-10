@@ -80,6 +80,12 @@ class smythbot_command(object):
     async def view_mythbackend_port(self):
         return await self.view_client_property("MythTv Backend Port", self.mythtv_port)
     
+    async def display_upcoming_recordings(self):
+        upcoming_queue = await self._interrogate_mythbackend("Dvr/GetUpcomingList")
+        print(upcoming_queue)
+        return{"command output":"<h1>Printed upcoming recordings</h1><p>Check console for details</p>"}
+
+    # Internal stuff
     async def return_error(self, bad_string):
         command_shard = {}
         command_shard["command name"] = "command not found"
@@ -106,11 +112,6 @@ class smythbot_command(object):
         command_shard["command output"] = "<h1>" + command_shard["command name"] + " is " + property_value + " </h1>"
         return command_shard
     
-    async def display_upcoming_recordings(self):
-        upcoming_queue = await self._interrogate_mythbackend("Dvr/GetUpcomingList")
-        print(upcoming_queue)
-        return{"command output":"<h1>Printed upcoming recordings</h1><p>Check console for details</p>"}
-
     async def _interrogate_mythbackend(self, endpoint_string):
         mythtv_backend_server = api.Send(host=self.mythtv_backend, port=self.mythtv_port)
         mythtv_response = mythtv_backend_server.send(endpoint=endpoint_string)
