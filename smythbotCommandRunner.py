@@ -81,8 +81,11 @@ class smythbot_command(object):
         return await self.view_client_property("MythTv Backend Port", self.mythtv_port)
     
     async def display_upcoming_recordings(self):
-        upcoming_queue = await self._interrogate_mythbackend("Dvr/GetUpcomingList")
-        print(upcoming_queue)
+        try:
+            upcoming_queue = await self._interrogate_mythbackend("Dvr/GetUpcomingList")
+        except RuntimeError:
+            return await self.connection_error()
+        
         return{"command output":"<h1>Printed upcoming recordings</h1><p>Check console for details</p>"}
 
     # Internal stuff
@@ -92,6 +95,16 @@ class smythbot_command(object):
         command_shard["command output"] = "<h1> The Command: " + bad_string + " was not recognized.</h1><p>Type: <strong>!smythbot help</strong> for more information about currently supported commands.</p>"
         return command_shard
     
+    async def connection_error(self):
+        error_output = {"command output":"""<h1>There was a problem</h1>
+        <p>There was a connection problem when querying your Myth Tv.
+        <br>This could mean a few things:
+        <ul>
+        <li>Your backend URL or port is set incorrectly</li>
+        <li>Your Myth Tv backend is down</li>
+        <li>Your connection to the Myth Tv is faulty.</li></ul></p>"""}
+        return error_output
+        
     async def malformed_command(self, command_name, error_reason):
         command_shard = {}
         command_shard["command name"] = "\"" + command_name + "\" was malformed"
@@ -114,5 +127,9 @@ class smythbot_command(object):
     
     async def _interrogate_mythbackend(self, endpoint_string):
         mythtv_backend_server = api.Send(host=self.mythtv_backend, port=self.mythtv_port)
-        mythtv_response = mythtv_backend_server.send(endpoint=endpoint_string)
+        try:
+            mythtv_response = mythtv_backend_server.send(endpoint=endpoint_string)
+        except RuntimeError as e:
+            print(e)
+            raise  
         return mythtv_response
