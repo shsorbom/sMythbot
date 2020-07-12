@@ -68,10 +68,14 @@ class smythbot_command(object):
 
     async def set_mythbackend_address(self, raw_command_input):
         split_command_string = raw_command_input.split()
+        if len(split_command_string) < 4:
+            return await self.malformed_command("set mythbackend address", "No Myth Tv Backend address was specified")
         return await self.set_client_property("MythTv Backend Address", split_command_string[3])
     
     async def set_mythbackend_port(self, raw_command_input):
         split_command_string = raw_command_input.split()
+        if len(split_command_string) < 4:
+            return await self.malformed_command("set mythbackend port", "No Myth Tv Backend port was specified")
         return await self.set_client_property("MythTv Backend Port", split_command_string[3])
 
     async def view_mythbackend_address(self):
@@ -141,7 +145,7 @@ class smythbot_command(object):
     async def malformed_command(self, command_name, error_reason):
         command_shard = {}
         command_shard["command name"] = "\"" + command_name + "\" was malformed"
-        command_shard["command output"] = "<h1>The command</h1> The command" + command_shard["command name"] +"<p>The reason: " + error_reason + "</p>"
+        command_shard["command output"] = "<h1>Malformed Command</h1> The command " + command_shard["command name"] +"<p>The reason: " + error_reason + "</p>"
         return command_shard
 
     async def set_client_property(self, property_name, property_value):
@@ -158,7 +162,7 @@ class smythbot_command(object):
         command_shard["command output"] = "<h1>" + command_shard["command name"] + " is " + property_value + " </h1>"
         return command_shard
     
-    async def _interrogate_mythbackend(self, endpoint_string):
+    async def _interrogate_mythbackend(self, endpoint_string, command_parameters = ""):
         mythtv_backend_server = api.Send(host=self.mythtv_backend, port=self.mythtv_port)
         try:
             mythtv_response = mythtv_backend_server.send(endpoint=endpoint_string)
