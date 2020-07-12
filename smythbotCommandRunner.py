@@ -85,8 +85,41 @@ class smythbot_command(object):
             upcoming_queue = await self._interrogate_mythbackend("Dvr/GetUpcomingList")
         except RuntimeError:
             return await self.connection_error()
-        
-        return{"command output":"<h1>Printed upcoming recordings</h1><p>Check console for details</p>"}
+        count = int(upcoming_queue['ProgramList']['Count'])
+        if count < 1:
+            return {"command output": "<h1>No recordiiings are scheduled at ths time</h1>"}
+        else:
+            style_format = """
+            <style>
+            table, th, td {
+            border: 1px solid black;
+            border-collapse: collapse;
+            }
+            th, td {
+            padding: 10px;
+            }
+            </style>"""
+            
+            
+            schedule_output = """
+            <h1>Upcoming Shows</h1>"""
+            schedule_output = schedule_output + style_format
+            schedule_output = schedule_output +"""<table>
+            <tr>
+            <th>Series Title</th>
+            <th>Episode Title</th>
+            <th>Start Time</th>
+            <th>End Time</th>
+            </tr>
+            """
+            progs = upcoming_queue['ProgramList']['Programs']
+            for program in progs:
+                schedule_output = schedule_output + "<tr><td>" + program["Title"] + "</td>"
+                schedule_output = schedule_output + "<td>" + program["SubTitle"] + "</td>"
+                schedule_output = schedule_output + "<td>" + program["StartTime"] + "</td>"
+                schedule_output = schedule_output + "<td>" + program["EndTime"] + "</td>"
+            schedule_output = schedule_output + "</table>"
+        return{"command output": schedule_output}
 
     # Internal stuff
     async def return_error(self, bad_string):
