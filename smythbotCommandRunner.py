@@ -94,40 +94,19 @@ class smythbot_command(object):
         if count < 1:
             return {"command output": "<h1>No recordings are scheduled at ths time</h1>"}
         else:
-            style_format = """
-            <style>
-            table, th, td {
-            border: 1px solid black;
-            border-collapse: collapse;
-            }
-            th, td {
-            padding: 10px;
-            }
-            </style>"""
-            
-            
-            schedule_output = """
-            <h1>Upcoming Shows</h1>"""
-            schedule_output = schedule_output + style_format
-            schedule_output = schedule_output +"""<table>
-            <tr>
-            <th>Series Title</th>
-            <th>Episode Title</th>
-            <th>Start Time</th>
-            <th>End Time</th>
-            </tr>
-            """
+            schedule_output = "<h1>Upcoming Recordings</h1>"
+            upcoming_table = smythbot_outputs.Table(["Series Title", "Episode Title", "Start Time", "End Time"])
             progs = upcoming_queue['ProgramList']['Programs']
             for program in progs:
-                schedule_output = schedule_output + "<tr><td>" + program["Title"] + "</td>"
-                schedule_output = schedule_output + "<td>" + program["SubTitle"] + "</td>"
-                schedule_output = schedule_output + "<td>" + program["StartTime"] + "</td>"
-                schedule_output = schedule_output + "<td>" + program["EndTime"] + "</td>"
-            schedule_output = schedule_output + "</table>"
+                await upcoming_table.add_cell_item(program["Title"])
+                await upcoming_table.add_cell_item(program["SubTitle"])
+                await upcoming_table.add_cell_item(program["StartTime"])
+                await upcoming_table.add_cell_item(program["EndTime"])
+            schedule_output = schedule_output + await upcoming_table.output_as_html()
         return{"command output": schedule_output}
 
-async def display_recorded_programs(self, raw_command):
-    pass
+    async def display_recorded_programs(self, raw_command):
+        pass
 
     # Internal stuff
     async def return_error(self, bad_string):
