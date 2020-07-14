@@ -38,12 +38,12 @@ class Table(object):
         html_string = html_string + "<tr>"
         for singleHeaderItem in self._table_header_row:
             html_string = html_string +"<th>" + singleHeaderItem + "</th>"
+        
         html_string = html_string + "</tr>\n"
         # Insert table body:
         for row in self.table_body:
             html_string = html_string + await self.insert_html_table_row(row)
         
-
         html_string = html_string + "</table>"
         return html_string
 
