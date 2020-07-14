@@ -1,4 +1,5 @@
 from MythTV.services_api import send as api
+import smythbot_outputs
 class smythbot_command(object):
     def __init__(self, raw_command, formatting = True, mythtv_backend = "not set", mythtv_port = 6544):
         self.raw_command = raw_command
@@ -91,7 +92,7 @@ class smythbot_command(object):
             return await self.connection_error()
         count = int(upcoming_queue['ProgramList']['Count'])
         if count < 1:
-            return {"command output": "<h1>No recordiiings are scheduled at ths time</h1>"}
+            return {"command output": "<h1>No recordings are scheduled at ths time</h1>"}
         else:
             style_format = """
             <style>
@@ -124,6 +125,9 @@ class smythbot_command(object):
                 schedule_output = schedule_output + "<td>" + program["EndTime"] + "</td>"
             schedule_output = schedule_output + "</table>"
         return{"command output": schedule_output}
+
+async def display_recorded_programs(self, raw_command):
+    pass
 
     # Internal stuff
     async def return_error(self, bad_string):
