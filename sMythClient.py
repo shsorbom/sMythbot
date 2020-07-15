@@ -7,17 +7,17 @@ import smythbotCommandRunner
 
 class smythClient(object):
     response = None
-    def __init__(self, homeserver, username, password):
+    def __init__(self, homeserver, username, password, use_ssl):
         self.homeserver = homeserver
         self.username = username
         self.password = password
-        self.client = AsyncClient(self.homeserver, self.username, ssl = False)
+        self.client = AsyncClient(self.homeserver, self.username, ssl = use_ssl)
         
 
         
 
         #Initialize per room configurator
-        self.roomConfigsPath = os.path.expanduser("~/.mythbot/rooms.ini")
+        self.roomConfigsPath = os.path.expanduser("~/.smythbot/rooms.ini")
         self.smythbotRoomConfigs = configparser.ConfigParser()
 
         # Declare the nessescary variables:

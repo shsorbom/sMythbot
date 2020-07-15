@@ -73,7 +73,7 @@ class Table(object):
         border-collapse: collapse;
         }
         th, td {
-        padding: 10px;
+        padding: 5px;
         }
         </style>"""
         return style_format

@@ -20,7 +20,7 @@ async def main():
     # Obligatory Setup
     #------------------
 
-    cfgFilePath = os.path.expanduser("~/.mythbot/config.ini") # TODO: Rewrite this statement for non POSIX systems
+    cfgFilePath = os.path.expanduser("~/.smythbot/config.ini") # TODO: Rewrite this statement for non POSIX systems
     cfgExists = os.path.exists(cfgFilePath)
     print (cfgFilePath)
     # TODO: Add argparser, the above settings are temporary
@@ -33,7 +33,7 @@ async def main():
     print("Config found at: " + cfgFilePath)
     botCfg = configparser.ConfigParser()
     botCfg.read(cfgFilePath)
-    matrix_bot = smythClient(botCfg["Matrix Settings"]["Server Name"], botCfg["Matrix Settings"]["User Name"], botCfg["Matrix Settings"]["Password"])
+    matrix_bot = smythClient(botCfg["Matrix Settings"]["Server Name"], botCfg["Matrix Settings"]["User Name"], botCfg["Matrix Settings"]["Password"], use_ssl = botCfg.getboolean("Matrix Settings", "SSL Check"))
     await matrix_bot.start_client()
     await matrix_bot.client.close()
     #print(matrix_bot.response)
