@@ -57,11 +57,15 @@ class smythbot_command(object):
         if help.lower() == "help": 
             help_string = """<h1> Hi, I am sMythbot</h1>
             <p>I exist to manage the MythTv DVR via Matrix chat.</p>
+            <p>Version: 0.1</p>
+            <p>WARNING: I am still in early alpha, use at your own risk. I take NO RESPONSIBILITY for any data loss</p>
             <p> I currently support the following commands:</p>
             <br><br>
             <strong>!smythbot help:</strong> Display this message <br>
             <strong>!smythbot set mythbackend address:</strong> Sets the mthtv backend address to use for this room.  <br>
             <strong>!smythbot set mythbacked port:</strong> Sets the mthtv backend port to use for this room. <br>
+            <strong>!smythbot display upcoming recordings:</strong> Displays the upcoming recordings on your Myth Tv Backend.  <br>
+            <strong>!smythbot display recorded programs:</strong> Displays the recordings from the default recording group that are stored on your Myth Tv Backend.  <br>
             """
             #<strong></strong>  <br>
         else:
@@ -73,6 +77,8 @@ class smythbot_command(object):
         split_command_string = raw_command_input.split()
         if len(split_command_string) < 4:
             return await self.malformed_command("set mythbackend address", "No Myth Tv Backend address was specified")
+        if split_command_string[3].startswith("http:") or split_command_string[3].startswith("https:"):
+            return await self.malformed_command("set mythbackend address", "the Myth Tv Backend URL cannot start with \"http://\" or \"https://\"")
         return await self.set_client_property("MythTv Backend Address", split_command_string[3])
     
     async def set_mythbackend_port(self, raw_command_input):
@@ -88,6 +94,8 @@ class smythbot_command(object):
         return await self.view_client_property("MythTv Backend Port", self.mythtv_port)
     
     async def display_upcoming_recordings(self):
+        if self.mythtv_backend == "not set":
+            return await self.malformed_command("display upcoming recordings", "The Myth Tv Backend URL for this room has not been set yet.<br>Please set it before using this command")
         try:
             upcoming_queue = await self._interrogate_mythbackend("Dvr/GetUpcomingList")
         except RuntimeError:
@@ -108,7 +116,10 @@ class smythbot_command(object):
         return{"command output": schedule_output}
 
     async def display_recorded_programs(self, raw_command):
-        rest_options = "Descending=True&StorageGroup=Default"
+        if self.mythtv_backend == "not set":
+            return await self.malformed_command("display recorded programs", "The Myth Tv Backend URL for this room has not been set yet.<br>Please set it before using this command")
+
+        rest_options = "Descending=True&StorageGroup=Default&RecGroup=Default"
         try:
             RecordedShowsList = await self._interrogate_mythbackend("Dvr/GetRecordedList", command_rest_parameters=rest_options)
         except RuntimeError:
