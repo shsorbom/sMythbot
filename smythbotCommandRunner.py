@@ -42,6 +42,8 @@ class smythbot_command(object):
                 self.command_results.append(await self.view_mythbackend_port())
             elif piece.startswith("display upcoming recordings"):
                 self.command_results.append(await self.display_upcoming_recordings())
+            elif piece.startswith("display recorded programs"):
+                self.command_results.append(await self.display_recorded_programs(piece))
             #..
             else:
                 self.command_results.append(await self.return_error(piece))
@@ -106,7 +108,27 @@ class smythbot_command(object):
         return{"command output": schedule_output}
 
     async def display_recorded_programs(self, raw_command):
-        pass
+        rest_options = "Descending=True&StorageGroup=Default"
+        try:
+            RecordedShowsList = await self._interrogate_mythbackend("Dvr/GetRecordedList", command_rest_parameters=rest_options)
+        except RuntimeError:
+            return await self.connection_error()
+        count = int(RecordedShowsList['ProgramList']['Count'])
+        if count < 1:
+            return {"command output": "<h1>No recordings are available at ths time</h1>"}
+        else:
+            progs = RecordedShowsList['ProgramList']['Programs']
+            upcoming_table = smythbot_outputs.Table(["Series Title", "Episode Title", "Start Time", "End Time"])
+            for program in progs:
+                await upcoming_table.add_cell_item(program["Title"])
+                await upcoming_table.add_cell_item(program["SubTitle"])
+                await upcoming_table.add_cell_item(program["StartTime"])
+                await upcoming_table.add_cell_item(program["EndTime"])
+            schedule_output = "<h1>Recorded Programs</h1>"
+            schedule_output = schedule_output + await upcoming_table.output_as_html()
+        return{"command output": schedule_output}
+
+
 
     # Internal stuff
     async def return_error(self, bad_string):
@@ -145,10 +167,10 @@ class smythbot_command(object):
         command_shard["command output"] = "<h1>" + command_shard["command name"] + " is " + property_value + " </h1>"
         return command_shard
     
-    async def _interrogate_mythbackend(self, endpoint_string, command_parameters = ""):
+    async def _interrogate_mythbackend(self, endpoint_string, command_rest_parameters = ""):
         mythtv_backend_server = api.Send(host=self.mythtv_backend, port=self.mythtv_port)
         try:
-            mythtv_response = mythtv_backend_server.send(endpoint=endpoint_string)
+            mythtv_response = mythtv_backend_server.send(endpoint=endpoint_string, rest=command_rest_parameters)
         except RuntimeError as e:
             print(e)
             raise  
