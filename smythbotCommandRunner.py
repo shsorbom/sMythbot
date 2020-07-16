@@ -57,7 +57,7 @@ class smythbot_command(object):
         if help.lower() == "help": 
             help_string = """<h1> Hi, I am sMythbot</h1>
             <p>I exist to manage the MythTv DVR via Matrix chat.</p>
-            <p>Version: 0.1</p>
+            <p>Version: 0.0.1</p>
             <p>WARNING: I am still in early alpha, use at your own risk. I take NO RESPONSIBILITY for any data loss</p>
             <p> I currently support the following commands:</p>
             <br><br>
@@ -85,8 +85,9 @@ class smythbot_command(object):
         split_command_string = raw_command_input.split()
         if len(split_command_string) < 4:
             return await self.malformed_command("set mythbackend port", "No Myth Tv Backend port was specified")
+        
         if not split_command_string[3].isdecimal():
-            return await self.malformed_command("set mythbackend port", "Port value may only cotain numbers")
+            return await self.malformed_command("set mythbackend port", "Port value may only be a positive whole number")
 
         return await self.set_client_property("MythTv Backend Port", split_command_string[3])
 
