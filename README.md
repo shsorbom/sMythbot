@@ -1,5 +1,5 @@
 # sMythbot
-sMythbot is a python script for use with the Mythtv project that allows for out-of-home control of a Mythtv DVR via the [Matrix Protocol](https://matrix.org/). Please see the project [wiki](https://github.com/shsorbom/sMythbot/wiki) for setup information. 
+sMythbot is a python script for use with the Mythtv project that allows for out-of-home control of a [Mythtv DVR](https://www.mythtv.org/) via the [Matrix Protocol](https://matrix.org/). Please see the project [wiki](https://github.com/shsorbom/sMythbot/wiki) for setup information. 
 
 ## Installation Prerequisites
 This prerequisite guide assumes a modern version of Ubuntu (>= 18.04). You also neet to be running  version 0.28 or higher of Myth Tv.
