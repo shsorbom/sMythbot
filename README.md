@@ -28,3 +28,6 @@ Now we need to get the Mythtv source code:
 * sMythbot currently has the potential to output a lot of data to a room and not many ways to limit it. Please be courteous and keep this in mind when using sMythbot on a public homeserver. 
 * All recording times are currently displayed in UTC. This will be fixed soon.
 * Matrix room permissions are not implemented yet. Only allow room access to people you trust not to damage your DVR.
+
+## Support
+If you need any further assistance, you can find me in the [sMythbot Matrix Help Room](https://matrix.to/#/!PTdRVAqaNwJYXRkcYt:matrix.org?via=matrix.org)
