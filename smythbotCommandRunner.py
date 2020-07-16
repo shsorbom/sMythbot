@@ -85,6 +85,9 @@ class smythbot_command(object):
         split_command_string = raw_command_input.split()
         if len(split_command_string) < 4:
             return await self.malformed_command("set mythbackend port", "No Myth Tv Backend port was specified")
+        if not split_command_string[3].isdecimal():
+            return await self.malformed_command("set mythbackend port", "Port value may only cotain numbers")
+
         return await self.set_client_property("MythTv Backend Port", split_command_string[3])
 
     async def view_mythbackend_address(self):
