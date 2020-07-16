@@ -101,22 +101,12 @@ class smythbot_command(object):
         if self.mythtv_backend == "not set":
             return await self.malformed_command("display upcoming recordings", "The Myth Tv Backend URL for this room has not been set yet.<br>Please set it before using this command")
         try:
-            upcoming_queue = await self._interrogate_mythbackend("Dvr/GetUpcomingList")
+            upcoming_queue = await self._processed_mythtv_data("Dvr/GetUpcomingList")
         except RuntimeError:
             return await self.connection_error()
-        count = int(upcoming_queue['ProgramList']['Count'])
-        if count < 1:
-            return {"command output": "<h1>No recordings are scheduled at ths time</h1>"}
-        else:
-            schedule_output = "<h1>Upcoming Recordings</h1>"
-            upcoming_table = smythbot_outputs.Table(["Series Title", "Episode Title", "Start Time", "End Time"])
-            progs = upcoming_queue['ProgramList']['Programs']
-            for program in progs:
-                await upcoming_table.add_cell_item(program["Title"])
-                await upcoming_table.add_cell_item(program["SubTitle"])
-                await upcoming_table.add_cell_item(program["StartTime"])
-                await upcoming_table.add_cell_item(program["EndTime"])
-            schedule_output = schedule_output + await upcoming_table.output_as_html()
+        if upcoming_queue.isEmpty():
+            return {"command output": "<h1>No sceduled recordings are coming up soon</h1>"}
+        schedule_output = "<h1>Upcoming Shows</h1>" + await upcoming_queue.output_as_html()
         return{"command output": schedule_output}
 
     async def display_recorded_programs(self, raw_command):
@@ -125,22 +115,14 @@ class smythbot_command(object):
 
         rest_options = "Descending=True&StorageGroup=Default&RecGroup=Default"
         try:
-            RecordedShowsList = await self._interrogate_mythbackend("Dvr/GetRecordedList", command_rest_parameters=rest_options)
+            RecordedShowsList = await self._processed_mythtv_data("Dvr/GetRecordedList", rest_commands=rest_options)
         except RuntimeError:
             return await self.connection_error()
-        count = int(RecordedShowsList['ProgramList']['Count'])
-        if count < 1:
-            return {"command output": "<h1>No recordings are available at ths time</h1>"}
-        else:
-            progs = RecordedShowsList['ProgramList']['Programs']
-            upcoming_table = smythbot_outputs.Table(["Series Title", "Episode Title", "Start Time", "End Time"])
-            for program in progs:
-                await upcoming_table.add_cell_item(program["Title"])
-                await upcoming_table.add_cell_item(program["SubTitle"])
-                await upcoming_table.add_cell_item(program["StartTime"])
-                await upcoming_table.add_cell_item(program["EndTime"])
-            schedule_output = "<h1>Recorded Programs</h1>"
-            schedule_output = schedule_output + await upcoming_table.output_as_html()
+        if RecordedShowsList.isEmpty():
+            return {"command output": "<h1>No recordings are available at ths time</h1>"}        
+
+        schedule_output = "<h1>Recorded Programs</h1>"
+        schedule_output = schedule_output + await RecordedShowsList.output_as_html()
         return{"command output": schedule_output}
 
 
@@ -190,3 +172,15 @@ class smythbot_command(object):
             print(e)
             raise  
         return mythtv_response
+
+    async def _processed_mythtv_data(self, endpoint_string, rest_commands = "", table_header = ["Series", "Episode", "Start Time", "End Time"], body_attributes = ["Title", "SubTitle", "StartTime", "EndTime"]): 
+        try:
+            raw_mythbackend_info = await self._interrogate_mythbackend(endpoint_string, command_rest_parameters = rest_commands)
+        except RuntimeError:
+            raise 
+        formatted_table = smythbot_outputs.Table(table_header)
+        progs = raw_mythbackend_info['ProgramList']['Programs']
+        for program in progs:
+            for attribute in body_attributes:
+                await formatted_table.add_cell_item(program[attribute])
+        return formatted_table

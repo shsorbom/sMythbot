@@ -3,15 +3,14 @@ import configparser
 import asyncio
 from sMythClient import smythClient
 
+smythbot_version = "0.0.1"
 
 async def genCfg(cfgPath):
     os.makedirs(os.path.dirname(cfgPath), exist_ok=True) #TODO: Surround this in try-catch block
     print("config dir made. ")
     mCfg = configparser.ConfigParser()
     mCfg["MythTvProperties"] = {"Host Name": "mythbox", "IP Address": "127.0.0.1", "Mythbackend Port": "6544", "MythFrontend Port":"6547"}
-    mCfg["IMAP Settings"] = {"Sever IP": "127.0.0.1","Username":"username", "Password": "password", "Security": "ssl"}
-    mCfg["SMTP Settings"] = {"Sever IP": "127.0.0.1","Username":"username", "Password": "password", "Security": "startls", "Email Address": "email@example.com"}
-    mCfg["Matrix Settings"] = {"Server Name": "127.0.0.1","User Name":"username", "Password": "password", "SSL Check": True} # TODO: Add support to toggle SSL Checks.
+    mCfg["Matrix Settings"] = {"Server Name": "127.0.0.1","User Name":"username", "Password": "password", "SSL Check": True} 
     with open(cfgPath, "w") as configfile:
         mCfg.write(configfile)
 

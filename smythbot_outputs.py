@@ -12,12 +12,14 @@ class Table(object):
         if self._table_column_index < len(self._table_header_row):
            self.table_body[self._table_row_index].append(item)
            self._table_column_index = self._table_column_index + 1
+           self._table_size = self._table_size + 1
         else:
             self._table_row_index = self._table_row_index + 1
             self._table_column_index = 0
             self.table_body.append([])
             self.table_body[self._table_row_index].append(item)
             self._table_column_index = self._table_column_index + 1
+            self._table_size = self._table_size + 1
         return
 
     def _add_table_row(self, item):
@@ -77,3 +79,9 @@ class Table(object):
         }
         </style>"""
         return style_format
+
+    def isEmpty(self):
+        if self._table_size == 0:
+            return True
+        else:
+            return False
