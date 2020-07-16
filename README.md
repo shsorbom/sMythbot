@@ -1,9 +1,9 @@
 # sMythbot
-sMythbot is a python script for use with the Mythtv project that allows for out-of-home control of a Mythtv DVR via the [Matrix Protocol](https://matrix.org/). Please see the project [wiki](https://github.com/shsorbom/sMythbot/wiki) for setup information. 
+sMythbot is a python script for use with the Mythtv project that allows for out-of-home control of a [Mythtv DVR](https://www.mythtv.org/) via the [Matrix Protocol](https://matrix.org/). Please see the project [wiki](https://github.com/shsorbom/sMythbot/wiki) for setup information. 
 
 ## Installation Prerequisites
 This prerequisite guide assumes a modern version of Ubuntu (>= 18.04). You also neet to be running  version 0.28 or higher of Myth Tv.
-If you are running 18.04, you will need to install version 3.8 or newer of python. 
+If you are running Ubuntu 18.04, you will need to install Python version 3.8 or newer. 
 I may add backwards compatability later, but for now, I reccomend installing [Pyenv](https://realpython.com/intro-to-pyenv/).   
 Once you have Python set up, run the following commands in a BASH terminal:   
 `sudo apt install libmariadbclient-dev`  
