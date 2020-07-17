@@ -111,7 +111,7 @@ class smythbot_command(object):
 
     async def display_recorded_programs(self, raw_command):
         if self.mythtv_backend == "not set":
-            return await self.malformed_command("display recorded programs", "The Myth Tv Backend URL for this room has not been set yet.<br>Please set it before using this command")
+            return await self.malformed_command("display recorded programs", "The Myth Tv Backend Address for this room has not been set yet.<br>Please set it before using this command")
 
         rest_options = "Descending=True&StorageGroup=Default&RecGroup=Default"
         try:
@@ -160,7 +160,6 @@ class smythbot_command(object):
     async def view_client_property(self, property_name, property_value):
         command_shard = {}
         command_shard["command name"] = "The " + property_name + " for this room"
-        command_shard["room settings data"] = {"property name":property_name, "property value":property_value}
         command_shard["command output"] = "<h1>" + command_shard["command name"] + " is " + property_value + " </h1>"
         return command_shard
     

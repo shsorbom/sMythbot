@@ -47,9 +47,12 @@ class smythClient(object):
         (which will be checked via other functons). When that is done, it will start the
         synchronization loop in AsyncClient and return
         """
-        
+        print("Attempting to login to " + self.homeserver)
         await self.init_login()
+        print(self.response)
+        print("Firing initial sync...")
         await self.sync_room_configs()
+        print ("Starting \"Sync Forever\" loop.\n")
         await self.client.sync_forever(timeout=30000, full_state=True)
         return
 
@@ -113,12 +116,13 @@ class smythClient(object):
         Called from the "watch_for_sync" event. This funtion sets the client state as being up to speed with 
         the current messages.
         """
-        print ("We are synced!")
+        #print ("We are synced!")
         self.isSynced = True
         return
 
     async def onNewMatrixEventReccieved(self, room, event):
         if self.isSynced and event.body.startswith(self.smythbot_handler):
+            print("Reccieved sMythbot command from room " + room.room_id + ", sent by " + event.sender)
             command_runner = smythbotCommandRunner.smythbot_command(event.body, mythtv_backend=self.smythbotRoomConfigs[room.room_id]["MythTv Backend Address"], mythtv_port=self.smythbotRoomConfigs[room.room_id]["MythTv Backend Port"]) 
             command_outputs = await command_runner.poulate_command_index() # The various smythbot commands will be processed inside of this function
             for item in command_outputs:
