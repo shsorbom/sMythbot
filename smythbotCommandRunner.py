@@ -1,4 +1,6 @@
 from MythTV.services_api import send as api
+from MythTV.services_api import utilities as util
+from datetime import datetime
 import smythbot_outputs
 class smythbot_command(object):
     def __init__(self, raw_command, formatting = True, mythtv_backend = "not set", mythtv_port = 6544):
@@ -40,6 +42,8 @@ class smythbot_command(object):
                 self.command_results.append(await self.view_mythbackend_address())
             elif piece.startswith("view mythbackend port"):
                 self.command_results.append(await self.view_mythbackend_port())
+            elif piece.startswith("view mythbackend info"):
+                self.command_results.append(await self.view_backend_info())
             elif piece.startswith("display upcoming recordings"):
                 self.command_results.append(await self.display_upcoming_recordings())
             elif piece.startswith("display recorded programs"):
@@ -97,6 +101,24 @@ class smythbot_command(object):
     async def view_mythbackend_port(self):
         return await self.view_client_property("MythTv Backend Port", self.mythtv_port)
     
+    async def view_backend_info(self):
+        try:
+            myth_hostname = await self._interrogate_mythbackend("/Myth/GetHostName")
+            backend_version = await self._interrogate_mythbackend("/Myth/GetBackendInfo")
+            myth_host_time = await self._interrogate_mythbackend("/Myth/GetTimeZone")
+            #schedules_direct = ""
+        except RuntimeError:
+            return await self.connection_error()
+        info_output = "<h1> Myth Tv Backend Information</h1>"
+        info_output = info_output + "<b>Myth Tv Hostname:</b> " + myth_hostname["String"] + "<br>\n"
+        info_output = info_output + "<b>Myth Tv Backend Version:</b> " + backend_version["BackendInfo"]["Build"]["Version"] + "<br>\n"
+        info_output = info_output + "<b>Myth Tv Host Time:</b> " + myth_host_time["TimeZoneInfo"]["CurrentDateTime"] + "<br>\n"
+        info_output = info_output + "<b>Myth Tv Host Time Zone:</b> " + myth_host_time["TimeZoneInfo"]["TimeZoneID"] + "<br>\n"
+
+
+
+        return {"command output":info_output}
+
     async def display_upcoming_recordings(self):
         if self.mythtv_backend == "not set":
             return await self.malformed_command("display upcoming recordings", "The Myth Tv Backend URL for this room has not been set yet.<br>Please set it before using this command")
@@ -181,5 +203,7 @@ class smythbot_command(object):
         progs = raw_mythbackend_info['ProgramList']['Programs']
         for program in progs:
             for attribute in body_attributes:
+                if attribute.find("Time"):
+                    pass
                 await formatted_table.add_cell_item(program[attribute])
         return formatted_table
