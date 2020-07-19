@@ -60,16 +60,23 @@ class smythbot_command(object):
     async def get_help(self, help = "help"):
         if help.lower() == "help": 
             help_string = """<h1> Hi, I am sMythbot</h1>
-            <p>I exist to manage the MythTv DVR via Matrix chat.</p>
+            <p>I exist to manage the <a href="https://www.mythtv.org/">Myth Tv DVR</a> via Matrix chat.</p>
             <p>Version: 0.0.1</p>
             <p>WARNING: I am still in early alpha, use at your own risk. I take NO RESPONSIBILITY for any data loss</p>
             <p> I currently support the following commands:</p>
             <br><br>
-            <strong>!smythbot help:</strong> Display this message <br>
-            <strong>!smythbot set mythbackend address:</strong> Sets the mthtv backend address to use for this room.  <br>
-            <strong>!smythbot set mythbacked port:</strong> Sets the mthtv backend port to use for this room. <br>
-            <strong>!smythbot display upcoming recordings:</strong> Displays the upcoming recordings on your Myth Tv Backend.  <br>
-            <strong>!smythbot display recorded programs:</strong> Displays the recordings from the default recording group that are stored on your Myth Tv Backend.  <br>
+            <p>
+            <strong>!smythbot help:</strong> Display this message <br><br>
+            <strong>!smythbot set mythbackend address:</strong> Sets the Myth Tv backend address to use for this room.  <br><br>
+            <strong>!smythbot set mythbacked port:</strong> Sets the Myth Tv backend port to use for this room. <br><br>
+            <strong>!smythbot view mythbackend address:</strong> Allows you to view the Myth Tv backend address set for this room <br><br>
+            <strong>!smythbot view mythbackend port:</strong> Allows you to view the Myth Tv backend port set for this room <br><br>
+            <strong>!smythbot view mythbackend info:</strong> Allows you to view various pieces of information for the Myth Tv backend connected to this room. It will not work if the address and port are not set.  <br><br>
+            <strong>!smythbot display upcoming recordings:</strong> Displays the upcoming recordings on your Myth Tv Backend.  <br><br>
+            <strong>!smythbot display recorded programs:</strong> Displays the recordings from the default recording group that are stored on your Myth Tv Backend.  <br><br><hr>
+            </p>
+            You can find more information about me on my <a href="https://github.com/shsorbom/sMythbot">Github Page</a>.<br>
+            I am distributed under the terms of the GNU GPL, Version 3
             """
             #<strong></strong>  <br>
         else:
