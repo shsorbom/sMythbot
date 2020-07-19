@@ -1,3 +1,4 @@
+import datetime
 class Table(object):
     def __init__(self, header_row_list, use_css = True):
         self._table_header_row = header_row_list
