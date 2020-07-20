@@ -8,14 +8,14 @@
             "name": "Launch Command Test",
             "type": "python",
             "request": "launch",
-            "program": "commandRunnerUnitTest.py",
+            "program": "./smythbot/commandRunnerUnitTest.py",
             "console": "integratedTerminal"
         },
         {
             "name": "Launch sMythbot",
             "type": "python",
             "request": "launch",
-            "program": "smythbot-main.py",
+            "program": "./smythbot/smythbot.py",
             "console": "integratedTerminal"
         }
     ]

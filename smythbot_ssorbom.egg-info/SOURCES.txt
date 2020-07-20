@@ -1,0 +1,8 @@
+MANIFEST.in
+README.md
+setup.cfg
+setup.py
+smythbot_ssorbom.egg-info/PKG-INFO
+smythbot_ssorbom.egg-info/SOURCES.txt
+smythbot_ssorbom.egg-info/dependency_links.txt
+smythbot_ssorbom.egg-info/top_level.txt
