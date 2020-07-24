@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 import datetime
 class Table(object):
     def __init__(self, header_row_list, use_css = True):
