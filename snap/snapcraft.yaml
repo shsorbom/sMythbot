@@ -23,7 +23,6 @@ parts:
       - python3-dev
       - libmariadbclient-dev
     stage-packages:
-    - libmariadbclient18
     - python3-wheel
     build-environment:
       - PYTHONPATH: "$SNAPCRAFT_PART_INSTALL/usr/lib/python3/dist-packages" 
