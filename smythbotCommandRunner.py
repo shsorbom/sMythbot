@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 from MythTV.services_api import send as api
 from MythTV.services_api import utilities as util
 from datetime import datetime
