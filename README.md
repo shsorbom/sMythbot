@@ -1,7 +1,7 @@
 # sMythbot
 sMythbot is a python script for use with the Mythtv project that allows for out-of-home control of a [Mythtv DVR](https://www.mythtv.org/) via the [Matrix Protocol](https://matrix.org/). Please see the project [wiki](https://github.com/shsorbom/sMythbot/wiki) for setup information. 
 ## Installation: The easy way
-If you have Ubuntu `snapd` installed (wich is available by default on most Linux distributions), all you need to do is open a terminal and type the following:  
+If you have Ubuntu `snapd` installed (which is available by default on most Linux distributions), all you need to do is open a terminal and type the following:  
 `sudo snap install --edge smythbot`  
 And you're done with the install!  
 
