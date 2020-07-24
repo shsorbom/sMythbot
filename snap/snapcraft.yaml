@@ -7,7 +7,7 @@ description: |
   for out-of-home control of a Mythtv DVR via the Matrix Protocol. 
   Please see the project wiki for setup information.
 
-grade: edge # must be 'stable' to release into candidate/stable channels
+grade: devel # must be 'stable' to release into candidate/stable channels
 confinement: strict # use 'strict' once you have the right plugs and slots
 
 environment:
@@ -23,7 +23,7 @@ parts:
     - libmariadb3
     - python3-wheel
     build-environment:
-      - PYTHONPATH: "$SNAPCRAFT_PART_INSTALL/usr/lib/python3/dist-packages" # https://forum.snapcraft.io/t/error-invalid-command-bdist-wheel/18960/3
+      - PYTHONPATH: "$SNAPCRAFT_PART_INSTALL/usr/lib/python3/dist-packages" 
     python-packages:
       - future
       - mysqlclient
