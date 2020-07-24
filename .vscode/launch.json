@@ -15,7 +15,7 @@
             "name": "Launch sMythbot",
             "type": "python",
             "request": "launch",
-            "program": "./smythbot/smythbot.py",
+            "program": "./smythbot.py",
             "console": "integratedTerminal"
         }
     ]
