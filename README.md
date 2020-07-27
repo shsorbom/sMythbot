@@ -1,3 +1,4 @@
+[![smythbot](https://snapcraft.io//smythbot/badge.svg)](https://snapcraft.io/smythbot)
 # sMythbot
 sMythbot is a python script for use with the Mythtv project that allows for out-of-home control of a [Mythtv DVR](https://www.mythtv.org/) via the [Matrix Protocol](https://matrix.org/). Please see the project [wiki](https://github.com/shsorbom/sMythbot/wiki) for setup information. 
 ## Installation: The easy way
