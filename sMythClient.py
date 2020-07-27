@@ -4,6 +4,7 @@ import os
 import configparser
 from importlib import util
 from nio import (AsyncClient, SyncResponse, RoomMessageText)
+import sys
 import smythbotCommandRunner
 
 class smythClient(object):
@@ -32,7 +33,15 @@ class smythClient(object):
         return
 
     async def init_login(self):
-        self.response = await self.client.login(self.password)
+        try:
+            self.response = await self.client.login(self.password)
+
+        except:
+            print("There was a problem logging into the specified homeserver.")
+            LoginError = sys.exc_info()
+            print("The error was: " + str(LoginError))
+            print ("Exiting...")
+            sys.exit(1)
         return
     
     async def start_client(self):
@@ -54,7 +63,12 @@ class smythClient(object):
         print("Firing initial sync...")
         await self.sync_room_configs()
         print ("Starting \"Sync Forever\" loop.\n")
-        await self.client.sync_forever(timeout=30000, full_state=True)
+        try:
+            await self.client.sync_forever(timeout=30000, full_state=True)
+        except KeyboardInterrupt:
+            print("Caught exit signal. Closing sMythbot.")
+            self.client.close()
+            sys.exit(0)
         return
 
     async def sync_room_configs(self):

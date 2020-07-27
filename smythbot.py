@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 import os
+import sys
 import configparser
 import asyncio
 from sMythClient import smythClient
@@ -43,5 +44,9 @@ async def main():
     
     
     
-    
-asyncio.get_event_loop().run_until_complete(main())
+try:    
+    asyncio.get_event_loop().run_until_complete(main())
+except KeyboardInterrupt:
+    print("\nCaught exit signal. Closing sMythbot.")
+    sys.exit(0)
+
