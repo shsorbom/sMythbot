@@ -4,7 +4,8 @@ sMythbot is a python script for use with the Mythtv project that allows for out-
 ## Installation: The easy way
 If you have Ubuntu `snapd` installed (which is available by default on most Linux distributions), all you need to do is open a terminal and type the following:  
 `sudo snap install --edge smythbot`  
-And you're done with the install!  
+And you're done with the install! 
+**Note:** On some older systems (mostly 16.04 era), it may be nessescary to run `snap install core` prior to running the install comand.
 
 ## Installation: The hard way 
 This prerequisite guide assumes a modern version of Ubuntu (>= 18.04). You also neet to be running  version 0.28 or higher of Myth Tv.
