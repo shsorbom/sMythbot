@@ -155,7 +155,20 @@ class smythbot_command(object):
         schedule_output = schedule_output + await RecordedShowsList.output_as_html()
         return{"command output": schedule_output}
 
+    async def getTunerStatus(self):
+        rest_endpoint = "Dvr/GetEncoderList"
+        try:
+            tuner_status = self._interrogate_mythbackend(rest_endpoint)
+        except RuntimeError:
+            return self.connection_error()
+        
+        output = {"command output":"<h1>Tuner Status</h1>"} #Remember to add newlines Befor the start of next string segment
+        # TODO: Figure out what to do with an empty list
+        for this_tuner in tuner_status:
 
+            pass
+        
+        return output
 
     # Internal stuff
     async def return_error(self, bad_string):
@@ -202,7 +215,7 @@ class smythbot_command(object):
             raise  
         return mythtv_response
 
-    async def _processed_mythtv_data(self, endpoint_string, rest_commands = "", table_header = ["Series", "Episode", "Start Time", "End Time"], body_attributes = ["Title", "SubTitle", "StartTime", "EndTime"]): 
+    async def _processed_mythtv_data(self, endpoint_string, rest_commands = "", table_header = ["Program", "Episode", "Start Time", "End Time"], body_attributes = ["Title", "SubTitle", "StartTime", "EndTime"]): 
         try:
             raw_mythbackend_info = await self._interrogate_mythbackend(endpoint_string, command_rest_parameters = rest_commands)
         except RuntimeError:
