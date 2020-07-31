@@ -35,13 +35,17 @@ class smythClient(object):
     async def init_login(self):
         try:
             self.response = await self.client.login(self.password)
+            if "M_FORBIDDEN" in str(self.response): 
+                print(str(self.response) + "\nExiting")
+                os._exit(1)
+
 
         except:
             print("There was a problem logging into the specified homeserver.")
             LoginError = sys.exc_info()
             print("The error was: " + str(LoginError))
             print ("Exiting...")
-            sys.exit(1)
+            os._exit(1)
         return
     
     async def start_client(self):

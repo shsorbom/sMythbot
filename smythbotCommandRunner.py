@@ -49,6 +49,8 @@ class smythbot_command(object):
                 self.command_results.append(await self.display_upcoming_recordings())
             elif piece.startswith("display recorded programs"):
                 self.command_results.append(await self.display_recorded_programs(piece))
+            elif piece.startswith("view mythbackend tuner status"):
+                self.command_results.append(await self.getTunerStatus())
             #..
             else:
                 self.command_results.append(await self.return_error(piece))
@@ -156,17 +158,28 @@ class smythbot_command(object):
         return{"command output": schedule_output}
 
     async def getTunerStatus(self):
-        rest_endpoint = "Dvr/GetEncoderList"
+        mythtv_endpoint = "Dvr/GetEncoderList"
         try:
-            tuner_status = self._interrogate_mythbackend(rest_endpoint)
+            tuner_status = await self._interrogate_mythbackend(mythtv_endpoint)
         except RuntimeError:
-            return self.connection_error()
+            return await self.connection_error()
         
         output = {"command output":"<h1>Tuner Status</h1>"} #Remember to add newlines Befor the start of next string segment
         # TODO: Figure out what to do with an empty list
-        for this_tuner in tuner_status:
+        for this_tuner in tuner_status["EncoderList"]["Encoders"]:
+            """
+            A quick note about encoder (tuner) states:
+            State 0: Not recording
+            State 1: Recording Live TV
+            State 7: Scheduled Recording
+            State -1: Communication error
 
-            pass
+            I may implement the others (yes, there are more), eventually, but these are all I care about at the moment.
+            """
+            if int(this_tuner["State"]) == 0:
+                output["command output"] = output["command output"] + "\n<h2>Tuner " + this_tuner["Id"] + "</h2><hr><b>Status:</b> not recording"
+            else:
+                pass
         
         return output
 
