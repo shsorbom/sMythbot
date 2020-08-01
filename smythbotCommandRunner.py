@@ -164,7 +164,9 @@ class smythbot_command(object):
         except RuntimeError:
             return await self.connection_error()
         
+        
         output = {"command output":"<h1>Tuner Status</h1>"} #Remember to add newlines Befor the start of next string segment
+        output["command output"] = output["command output"] + "<style>h2{margin-top 2, margin-bottom: 0.2}</style>"
         # TODO: Figure out what to do with an empty list
         for this_tuner in tuner_status["EncoderList"]["Encoders"]:
             """
@@ -178,8 +180,26 @@ class smythbot_command(object):
             """
             if int(this_tuner["State"]) == 0:
                 output["command output"] = output["command output"] + "\n<h2>Tuner " + this_tuner["Id"] + "</h2><hr><b>Status:</b> not recording"
+            elif int(this_tuner["State"]) == 1:
+                output["command output"] = output["command output"] + "\n<h2>Tuner " + this_tuner["Id"] + "</h2><hr><br><b>Status:</b> recording Live Tv"
+                output["command output"] = output["command output"] + "\n<br><b>Program:</b> " + this_tuner["Recording"]["Title"]
+                if not this_tuner["Recording"]["SubTitle"] == "":
+                    output["command output"] = output["command output"] + "\n<br><b>Episode:</b> " + this_tuner["Recording"]["SubTitle"]
+                output["command output"] = output["command output"] + "\n<br><b>Recording Start Time:</b> " + this_tuner["Recording"]["StartTime"]
+                output["command output"] = output["command output"] + "\n<br><b>Recording End Time:</b> " + this_tuner["Recording"]["EndTime"]
+            
+            elif int(this_tuner["State"]) == 7:
+                output["command output"] = output["command output"] + "\n<h2>Tuner " + this_tuner["Id"] + "</h2><hr><b>Status:</b> recording a Scheduled Program"
+                output["command output"] = output["command output"] + "\n<br><b>Program:</b> " + this_tuner["Recording"]["Title"]
+                if not this_tuner["Recording"]["SubTitle"] == "":
+                    output["command output"] = output["command output"] + "\n<br><b>Episode:</b> " + this_tuner["Recording"]["SubTitle"]
+                output["command output"] = output["command output"] + "\n<br><b>Recording Start Time:</b> " + this_tuner["Recording"]["StartTime"]
+                output["command output"] = output["command output"] + "\n<br><b>Recording End Time:</b> " + this_tuner["Recording"]["EndTime"]
+            
+            elif int(this_tuner["State"]) == -1:
+                output["command output"] = output["command output"] + "\n<h2>Tuner " + this_tuner["Id"] + "</h2><hr><b>Status:</b> tuning error"
             else:
-                pass
+                output["command output"] = output["command output"] + "\n<h2>Tuner " + this_tuner["Id"] + "</h2><hr><b>Status:</b> unknown (in use)"
         
         return output
 
