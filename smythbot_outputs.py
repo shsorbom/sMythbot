@@ -60,6 +60,18 @@ class Table(object):
         rowOutput = rowOutput +"\n"
         return rowOutput
 
+    async def output_as_simple_html(self):
+        output = ""
+        index = 0
+        while index <= self._table_row_index:
+            output = output + "<h2>Program</h2>\n"
+            index2 = 0
+            while index2 < len(self._table_header_row):
+                output = output + "<b>" + self._table_header_row[index2] + ":</b> " + self.table_body[index][index2] + "<br>\n"
+                index2 = index2 +1
+            output = output + "\n"
+            index = index + 1    
+        return output
     def add_header_title(self, header_title, index = -1):
         pass
 
