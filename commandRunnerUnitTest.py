@@ -21,7 +21,7 @@ async def main():
     await testTable.add_cell_item("Skippy")
     await testTable.add_cell_item("Eagle")
     await testTable.add_cell_item("7")
-    output = await testTable.output_as_html()
+    output = await testTable.output_as_simple_html()
     print(output)
     return
 

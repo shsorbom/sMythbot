@@ -106,6 +106,7 @@ class smythClient(object):
         self.smythbotRoomConfigs[room_id] = {}
         self.smythbotRoomConfigs[room_id]["MythTv Backend Address"] = "not set"
         self.smythbotRoomConfigs[room_id]["MythTv Backend Port"] = "6544"
+        self.smythbotRoomConfigs[room_id]["Output Type"] = "table"
         self.smythbotRoomConfigs[room_id]["Room Notifications"] = "False"
         print("Added new room Configuration " + room_id)
         if writeToDisk:
@@ -142,7 +143,7 @@ class smythClient(object):
     async def onNewMatrixEventReccieved(self, room, event):
         if self.isSynced and event.body.startswith(self.smythbot_handler):
             print("Reccieved sMythbot command from room " + room.room_id + ", sent by " + event.sender)
-            command_runner = smythbotCommandRunner.smythbot_command(event.body, mythtv_backend=self.smythbotRoomConfigs[room.room_id]["MythTv Backend Address"], mythtv_port=self.smythbotRoomConfigs[room.room_id]["MythTv Backend Port"]) 
+            command_runner = smythbotCommandRunner.smythbot_command(event.body, mythtv_backend=self.smythbotRoomConfigs[room.room_id]["MythTv Backend Address"], mythtv_port=self.smythbotRoomConfigs[room.room_id]["MythTv Backend Port"], formatting=self.smythbotRoomConfigs[room.room_id]["Output Type"]) 
             command_outputs = await command_runner.poulate_command_index() # The various smythbot commands will be processed inside of this function
             for item in command_outputs:
                 for key_item in item.keys():

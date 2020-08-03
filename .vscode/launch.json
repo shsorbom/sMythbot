@@ -8,7 +8,7 @@
             "name": "Launch Command Test",
             "type": "python",
             "request": "launch",
-            "program": "./smythbot/commandRunnerUnitTest.py",
+            "program": "./commandRunnerUnitTest.py",
             "console": "integratedTerminal"
         },
         {

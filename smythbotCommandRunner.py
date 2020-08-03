@@ -4,7 +4,7 @@ from MythTV.services_api import utilities as util
 from datetime import datetime
 import smythbot_outputs
 class smythbot_command(object):
-    def __init__(self, raw_command, formatting = True, mythtv_backend = "not set", mythtv_port = 6544):
+    def __init__(self, raw_command, formatting = "table", mythtv_backend = "not set", mythtv_port = 6544):
         self.raw_command = raw_command
         self.formatting = formatting
         self.mythtv_backend = mythtv_backend
@@ -39,8 +39,12 @@ class smythbot_command(object):
                 self.command_results.append(await self.set_mythbackend_address(piece))
             elif piece.startswith("set mythbackend port"):
                 self.command_results.append(await self.set_mythbackend_port(piece))
+            elif piece.startswith("set output format"):
+                self.command_results.append(await self.set_formatting(piece))
             elif piece.startswith("view mythbackend address"):
                 self.command_results.append(await self.view_mythbackend_address())
+            elif piece.startswith("view output format"):
+                self.command_results.append(self.view_formatting())
             elif piece.startswith("view mythbackend port"):
                 self.command_results.append(await self.view_mythbackend_port())
             elif piece.startswith("view mythbackend info"):
@@ -106,12 +110,24 @@ class smythbot_command(object):
 
         return await self.set_client_property("MythTv Backend Port", split_command_string[3])
 
+    async def set_formatting(self, raw_command_input):
+        split_command_string = raw_command_input.split()
+        if len(split_command_string) < 4:
+            return await self.malformed_command("set output format", "No output format was specified (valid options are, \"table\" and \"html\")") 
+        if not (split_command_string[3].lower() == "table" or split_command_string[3].lower() == "html"):
+            return await self.malformed_command("set output format", "Invalid output format specified (valid options are, \"table\" and \"html\")")
+        else:
+            return await self.set_client_property("Output Type", split_command_string[3].lower())
+
     async def view_mythbackend_address(self):
         return await self.view_client_property("MythTv Backend Address", self.mythtv_backend)
 
     async def view_mythbackend_port(self):
         return await self.view_client_property("MythTv Backend Port", self.mythtv_port)
     
+    async def view_formatting(self):
+        return await self.view_client_property("Output Format", self.formatting)
+
     async def view_backend_info(self):
         try:
             myth_hostname = await self._interrogate_mythbackend("/Myth/GetHostName")
@@ -139,7 +155,11 @@ class smythbot_command(object):
             return await self.connection_error()
         if upcoming_queue.isEmpty():
             return {"command output": "<h1>No sceduled recordings are coming up soon</h1>"}
-        schedule_output = "<h1>Upcoming Shows</h1>" + await upcoming_queue.output_as_html()
+        schedule_output = "<h1>Upcoming Recordings</h1>\n"
+        if self.formatting == "table":
+            schedule_output = schedule_output + await upcoming_queue.output_as_html()
+        elif self.formatting == "html":
+            schedule_output = schedule_output + await upcoming_queue.output_as_simple_html()
         return{"command output": schedule_output}
 
     async def display_recorded_programs(self, raw_command):
@@ -155,7 +175,10 @@ class smythbot_command(object):
             return {"command output": "<h1>No recordings are available at ths time</h1>"}        
 
         schedule_output = "<h1>Recorded Programs</h1>"
-        schedule_output = schedule_output + await RecordedShowsList.output_as_html()
+        if self.formatting == "table":
+            schedule_output = schedule_output + await RecordedShowsList.output_as_html()
+        elif self.formatting == "html":
+            schedule_output = schedule_output + await RecordedShowsList.output_as_simple_html()
         return{"command output": schedule_output}
 
     async def getTunerStatus(self):
