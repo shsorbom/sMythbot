@@ -55,6 +55,8 @@ class smythbot_command(object):
                 self.command_results.append(await self.display_recorded_programs(piece))
             elif piece.startswith("view mythbackend tuner status"):
                 self.command_results.append(await self.getTunerStatus())
+            elif piece.startswith("search guide by"):
+                self.command_results.append(await self.searchGuide(piece))
             #..
             else:
                 self.command_results.append(await self.return_error(piece))
@@ -226,6 +228,36 @@ class smythbot_command(object):
                 output["command output"] = output["command output"] + "\n<h2>Tuner " + this_tuner["Id"] + "</h2><hr><b>Status:</b> unknown (in use)"
         
         return output
+
+    async def searchGuide(self, raw_command):
+        command_length = len(raw_command.split()) 
+        if command_length < 5:
+            return await self.malformed_command("search guide", "No search criteria provided.")
+        endpoint = "Guide/GetProgramList"
+        rest_parameters = "Details=True&"
+        if raw_command.startswith("search guide by program"):
+            rest_parameters = rest_parameters + "TitleFilter=" + raw_command[len("search guide by program "):]
+        elif raw_command.startswith("search guide by episode"):
+            pass 
+        elif raw_command.startswith("search guide by keyword"):
+            rest_parameters = rest_parameters + "KeywordFilter=" + raw_command[len("search guide by program "):]
+        
+        else:
+            return await self.malformed_command("search guide", "Invalid filter")
+        
+        try:
+            guide_data = await self._processed_mythtv_data(endpoint, rest_parameters)
+        except:
+            return await self.connection_error()
+        
+        if guide_data.isEmpty():
+            return {"command output": "<h1>Nothing matching your query was found in the guide"}
+        
+        if self.formatting == "table":
+            return {"command output": "<h1> Guide Search results</h1>" + await guide_data.output_as_html()}
+        elif self.formatting == "html":
+            return {"command output": "<h1> Guide Search results</h1>" + await guide_data.output_as_simple_html()}
+
 
     # Internal stuff
     async def return_error(self, bad_string):
