@@ -70,7 +70,7 @@ class smythbot_command(object):
         if help.lower() == "help": 
             help_string = """<h1> Hi, I am sMythbot</h1>
             <p>I exist to manage the <a href="https://www.mythtv.org/">Myth Tv DVR</a> via Matrix chat.</p>
-            <p>Version: 0.0.1</p>
+            <p>Version: 0.0.2</p>
             <p>WARNING: I am still in early alpha, use at your own risk. I take NO RESPONSIBILITY for any data loss</p>
             <p> I currently support the following commands:</p>
             <br><br>
@@ -82,8 +82,10 @@ class smythbot_command(object):
             <strong>!smythbot view mythbackend port:</strong> Allows you to view the Myth Tv backend port set for this room <br><br>
             <strong>!smythbot view mythbackend info:</strong> Allows you to view various pieces of information for the Myth Tv backend connected to this room. It will not work if the address and port are not set.  <br><br>
             <strong>!smythbot display upcoming recordings:</strong> Displays the upcoming recordings on your Myth Tv backend.  <br><br>
-            <strong>!smythbot display recorded programs:</strong> Displays the recordings from the default recording group that are stored on your Myth Tv Backend.  <br><br><hr>
-            <strong>!smythbot view mythbackend tuner status:</strong>  Displays the current status of the tuners for the Myth Tv backend<br>
+            <strong>!smythbot display recorded programs:</strong> Displays the recordings from the default recording group that are stored on your Myth Tv Backend.  <br><br>
+            <strong>!smythbot view mythbackend tuner status:</strong>  Displays the current status of the tuners for the Myth Tv backend<br><br>
+            <strong>!smythbot search guide by program:</strong> Search the Myth Tv guide by program name <br><br>
+            <strong>!smythbot search guide by program:</strong> Search the Myth Tv guide by program key word <br><br>
             </p>
             You can find more information about me on my <a href="https://github.com/shsorbom/sMythbot">Github Page</a>.<br>
             I am distributed under the terms of the GNU GPL, Version 3
@@ -237,8 +239,7 @@ class smythbot_command(object):
         rest_parameters = "Details=True&"
         if raw_command.startswith("search guide by program"):
             rest_parameters = rest_parameters + "TitleFilter=" + raw_command[len("search guide by program "):]
-        elif raw_command.startswith("search guide by episode"):
-            pass 
+        
         elif raw_command.startswith("search guide by keyword"):
             rest_parameters = rest_parameters + "KeywordFilter=" + raw_command[len("search guide by program "):]
         
