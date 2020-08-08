@@ -79,6 +79,8 @@ class smythbot_command(object):
             <strong>!smythbot set mythbackend address:</strong> Sets the Myth Tv backend address to use for this room.  <br><br>
             <strong>!smythbot set mythbacked port:</strong> Sets the Myth Tv backend port to use for this room. <br><br>
             <strong>!smythbot view mythbackend address:</strong> Allows you to view the Myth Tv backend address set for this room <br><br>
+            <strong>!smythbot set output format:</strong> Set the dispay outut type. Valid options are \"table\" and \"html\"  <br><br>
+            <strong>!smythbot view output format:</strong> view the output format set for this room  <br>
             <strong>!smythbot view mythbackend port:</strong> Allows you to view the Myth Tv backend port set for this room <br><br>
             <strong>!smythbot view mythbackend info:</strong> Allows you to view various pieces of information for the Myth Tv backend connected to this room. It will not work if the address and port are not set.  <br><br>
             <strong>!smythbot display upcoming recordings:</strong> Displays the upcoming recordings on your Myth Tv backend.  <br><br>
