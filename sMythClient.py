@@ -143,6 +143,10 @@ class smythClient(object):
     async def onNewMatrixEventReccieved(self, room, event):
         if self.isSynced and event.body.startswith(self.smythbot_handler):
             print("Reccieved sMythbot command from room " + room.room_id + ", sent by " + event.sender)
+            if not event.body.isprintable():
+                print ("ERROR: Not sending command. Non-printable characters may cause a security risk")
+                await self.client.room_send(room.machine_name, "m.room.message", await self.reply("<h1>Command not processed</h1><hr> The command you sent contains at least one non-printable character. As these often pose security risks, sMythbot will not process it."))
+                return
             command_runner = smythbotCommandRunner.smythbot_command(event.body, mythtv_backend=self.smythbotRoomConfigs[room.room_id]["MythTv Backend Address"], mythtv_port=self.smythbotRoomConfigs[room.room_id]["MythTv Backend Port"], formatting=self.smythbotRoomConfigs[room.room_id]["Output Type"]) 
             command_outputs = await command_runner.poulate_command_index() # The various smythbot commands will be processed inside of this function
             for item in command_outputs:
