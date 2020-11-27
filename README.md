@@ -12,6 +12,9 @@ This prerequisite guide assumes a modern version of Ubuntu (>= 18.04). You also 
 If you are running Ubuntu 18.04, you will need to install Python version 3.8 or newer. 
 I may add backwards compatability later, but for now, I reccomend installing [Pyenv](https://realpython.com/intro-to-pyenv/).   
 
+First, you will need to istall a system dependency.  
+Open a terminal and type:  
+` sudo apt install libmariadbclient-dev`  
 Now we need to get the Mythtv source code:  
 `git clone https://github.com/MythTV/mythtv`  
 ...Go to the directory where the API's we need are located:  
